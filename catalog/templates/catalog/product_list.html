@@ -24,10 +24,12 @@
                 <div class="btn-group">
                  <a href="{% url 'catalog:view' object.pk %}"
                       class="btn btn-sm btn-outline-secondary">View</a>
+                  {% if user == product.user or perms.catalog.can_cancel_puplication and perms.catalog.can_change_desription and perms.catalog.can_change_category %}
                    <a href="{% url 'catalog:edit' object.pk %}"
                       class="btn btn-sm btn-outline-secondary">Edit</a>
                    <a href="{% url 'catalog:delete' object.pk %}"
                       class="btn btn-sm btn-outline-danger">Delete</a>
+                   {% endif %}
                 </div>
                 <small class="text-body-secondary">9 mins</small>
               </div>

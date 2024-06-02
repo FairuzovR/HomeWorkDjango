@@ -1,7 +1,9 @@
+from django import forms
 from django.forms import ModelForm
 from catalog.models import Product, Version
 from django.forms.fields import BooleanField
 from django.core.exceptions import ValidationError
+
 
 error_worlds = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
 
@@ -41,3 +43,8 @@ class VersionForm(ModelForm):
     class Meta:
         model = Version
         fields = "__all__"
+
+class ProductModeratorForm(StyleForMexin, forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ("published", "description", "category")

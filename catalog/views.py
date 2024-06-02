@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from catalog.models import Product, Version
 from django.views.generic import (
     CreateView, ListView, DetailView, DetailView, UpdateView, DeleteView)
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
 from django.forms.models import inlineformset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -16,7 +17,7 @@ def home(request):
 def contacts(request):
     return render(request, 'catalog/contacts.html')
 
-class ProductsCreateView(CreateView):
+class ProductsCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products_list')
@@ -24,12 +25,13 @@ class ProductsCreateView(CreateView):
     def form_valid(self, form):
         if form.is_valid():
             new_product = form.save()
+            new_product.owner = self.request.user
             new_product.slug = slugify(new_product.name)
             new_product.save()
 
         return super().form_valid(form)
 
-class ProductsUpdateView(UpdateView):
+class ProductsUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
@@ -60,6 +62,16 @@ class ProductsUpdateView(UpdateView):
             return super().form_valid(form)
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.user:
+            return ProductForm
+        if (user.has_perm('catalog.can_cancel_puplication') and
+                user.has_perm('catalog.can_change_desription') and user.has_perm('catalog.can_change_category')):
+            return ProductModeratorForm
+        raise PermissionDenied
+
 
     def get_success_url(self):
         return reverse('catalog:view', args=[self.kwargs.get('pk')])
