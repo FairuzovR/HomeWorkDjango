@@ -15,9 +15,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(db_index=True, max_length=100, verbose_name='Наименование категории')),
-                ('description', models.TextField(max_length=10000, verbose_name='Описание')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID')),
+                ('name', models.CharField(
+                    db_index=True,
+                    max_length=100,
+                    verbose_name='Наименование категории')),
+                ('description', models.TextField(
+                    max_length=10000,
+                    verbose_name='Описание')),
             ],
             options={
                 'verbose_name': 'Категория',
@@ -28,14 +37,38 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Product',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Наименование продукта')),
-                ('description', models.TextField(max_length=10000, verbose_name='Описание')),
-                ('images', models.ImageField(blank=True, null=True, upload_to='products/photo', verbose_name='Изображение')),
-                ('price', models.IntegerField(null=True, verbose_name='Цена за покупку')),
-                ('time_create', models.DateTimeField(auto_now_add=True, null=True, verbose_name='Дата создания')),
-                ('time_update', models.DateTimeField(auto_now=True, null=True, verbose_name='Дата последнего изменения')),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='products', to='catalog.category', verbose_name='Категория')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False, verbose_name='ID')),
+                ('name', models.CharField(
+                    max_length=100,
+                    verbose_name='Наименование продукта')),
+                ('description', models.TextField(
+                    max_length=10000,
+                    verbose_name='Описание')),
+                ('images', models.ImageField(
+                    blank=True,
+                    null=True,
+                    upload_to='products/photo',
+                    verbose_name='Изображение')),
+                ('price', models.IntegerField(
+                    null=True,
+                    verbose_name='Цена за покупку')),
+                ('time_create', models.DateTimeField(
+                    auto_now_add=True,
+                    null=True,
+                    verbose_name='Дата создания')),
+                ('time_update', models.DateTimeField(
+                    auto_now=True,
+                    null=True,
+                    verbose_name='Дата последнего изменения')),
+                ('category', models.ForeignKey(
+                    null=True,
+                    on_delete=django.db.models.deletion.PROTECT,
+                    related_name='products',
+                    to='catalog.category',
+                    verbose_name='Категория')),
             ],
             options={
                 'verbose_name': 'Продукты',
@@ -46,11 +79,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Version',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number_version', models.IntegerField(verbose_name='Номер версии')),
-                ('name', models.CharField(max_length=100, verbose_name='Название версии')),
-                ('current_version', models.BooleanField(default=True, verbose_name='Текущая версия')),
-                ('product', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='products', to='catalog.product', verbose_name='Продукт')),
+                ('id', models.BigAutoField(
+                    auto_created=True,
+                    primary_key=True,
+                    serialize=False,
+                    verbose_name='ID')),
+                ('number_version', models.IntegerField(
+                    verbose_name='Номер версии')),
+                ('name', models.CharField(
+                    max_length=100,
+                    verbose_name='Название версии')),
+                ('current_version', models.BooleanField(
+                    default=True,
+                    verbose_name='Текущая версия')),
+                ('product', models.ForeignKey(
+                    blank=True, null=True,
+                    on_delete=django.db.models.deletion.SET_NULL,
+                    related_name='products',
+                    to='catalog.product',
+                    verbose_name='Продукт')),
             ],
             options={
                 'verbose_name': 'Версия',

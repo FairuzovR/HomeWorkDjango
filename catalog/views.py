@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render
 from catalog.models import Product, Version
 from django.views.generic import (
-    CreateView, ListView, DetailView, DetailView, UpdateView, DeleteView)
+    CreateView, ListView, DetailView, UpdateView, DeleteView)
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
 from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
@@ -14,8 +14,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 def home(request):
     return render(request, 'catalog/home.html')
 
+
 def contacts(request):
     return render(request, 'catalog/contacts.html')
+
 
 class ProductsCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -31,29 +33,32 @@ class ProductsCreateView(LoginRequiredMixin, CreateView):
 
         return super().form_valid(form)
 
+
 class ProductsUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
-    def form_valid(self, form):
-        if form.is_valid():
-            new_product = form.save()
-            new_product.slug = slugify(new_product.name)
-            new_product.save()
-
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     if form.is_valid():
+    #         new_product = form.save()
+    #         new_product.slug = slugify(new_product.name)
+    #         new_product.save()
+    #
+    #     return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        ProductFormset = inlineformset_factory(Product, Version, VersionForm, extra=1)
+        ProductFormset = inlineformset_factory(
+            Product, Version, VersionForm, extra=1)
         if self.request.method == 'POST':
-            context["formset"] = ProductFormset(self.request.POST, instance=self.object)
+            context["formset"] = ProductFormset(
+                self.request.POST, instance=self.object)
         else:
             context["formset"] = ProductFormset(instance=self.object)
         return context
 
     def form_valid(self, form):
-        context =  self.get_context_data()
+        context = self.get_context_data()
         formset = context['formset']
         if form.is_valid() and formset.is_valid():
             self.object = form.save()
@@ -61,20 +66,22 @@ class ProductsUpdateView(LoginRequiredMixin, UpdateView):
             formset.save()
             return super().form_valid(form)
         else:
-            return self.render_to_response(self.get_context_data(form=form, formset=formset))
+            return self.render_to_response(
+                self.get_context_data(form=form, formset=formset))
 
     def get_form_class(self):
         user = self.request.user
         if user == self.object.user:
             return ProductForm
         if (user.has_perm('catalog.can_cancel_puplication') and
-                user.has_perm('catalog.can_change_desription') and user.has_perm('catalog.can_change_category')):
+                user.has_perm('catalog.can_change_desription')
+                and user.has_perm('catalog.can_change_category')):
             return ProductModeratorForm
         raise PermissionDenied
 
-
     def get_success_url(self):
         return reverse('catalog:view', args=[self.kwargs.get('pk')])
+
 
 class ProductsListView(ListView):
     model = Product
@@ -82,13 +89,16 @@ class ProductsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         for object in context.get('object_list'):
-            version = Version.objects.filter(current_version=True, product_id=object.pk).first()
+            version = Version.objects.filter(
+                current_version=True,
+                product_id=object.pk).first()
             object.version = version
         return context
 
 
 class ProductView(DetailView):
     model = Product
+
 
 class ProductDeleteView(DeleteView):
     model = Product

@@ -5,7 +5,10 @@ from django.forms.fields import BooleanField
 from django.core.exceptions import ValidationError
 
 
-error_worlds = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
+error_worlds = ['казино', 'криптовалюта', 'крипта',
+                'биржа', 'дешево', 'бесплатно',
+                'обман', 'полиция', 'радар']
+
 
 class StyleForMexin:
     def __init__(self, *args, **kwargs):
@@ -16,17 +19,18 @@ class StyleForMexin:
             else:
                 fild.widget.attrs['class'] = 'form-control'
 
+
 class ProductForm(StyleForMexin, ModelForm):
     class Meta:
         model = Product
         exclude = "__all__"
 
-
     def clean_name(self):
         name = self.cleaned_data['name']
         for error_world in error_worlds:
             if error_world in name.lower():
-                raise ValidationError(f'{error_world} не должно находиться в названии')
+                raise ValidationError(
+                    f'{error_world} не должно находиться в названии')
 
         return name
 
@@ -34,7 +38,8 @@ class ProductForm(StyleForMexin, ModelForm):
         description = self.cleaned_data['description']
         for error_world in error_worlds:
             if error_world in description.lower():
-                raise ValidationError(f'{error_world} не должно находиться в описании')
+                raise ValidationError(
+                    f'{error_world} не должно находиться в описании')
 
         return description
 
@@ -43,6 +48,7 @@ class VersionForm(ModelForm):
     class Meta:
         model = Version
         fields = "__all__"
+
 
 class ProductModeratorForm(StyleForMexin, forms.ModelForm):
     class Meta:

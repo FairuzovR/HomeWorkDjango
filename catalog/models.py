@@ -2,21 +2,44 @@ from django.db import models
 from users.models import User
 
 
-NULLABLE = {'blank' : True, 'null' : True}
+NULLABLE = {'blank': True, 'null': True}
+
 
 class Product(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Наименование продукта')
-    description = models.TextField(max_length=10000, verbose_name='Описание')
-    images = models.ImageField(upload_to='products/photo', verbose_name='Изображение', **NULLABLE)
-    category =  models.ForeignKey('Category', on_delete=models.PROTECT, null=True, related_name='products',
-                                  verbose_name='Категория')
-    price = models.IntegerField (verbose_name='Цена за покупку', null=True)
-    time_create = models.DateTimeField(auto_now_add=True, blank=True, verbose_name='Дата создания', null=True)
-    time_update = models.DateTimeField(auto_now=True, blank=True, verbose_name='Дата последнего изменения', null=True)
+    name = models.CharField(
+        max_length=100,
+        verbose_name='Наименование продукта')
+    description = models.TextField(
+        max_length=10000,
+        verbose_name='Описание')
+    images = models.ImageField(
+        upload_to='products/photo',
+        verbose_name='Изображение',
+        **NULLABLE)
+    category = models.ForeignKey(
+        'Category', on_delete=models.PROTECT,
+        null=True, related_name='products',
+        verbose_name='Категория')
+    price = models.IntegerField(
+        verbose_name='Цена за покупку',
+        null=True)
+    time_create = models.DateTimeField(
+        auto_now_add=True, blank=True,
+        verbose_name='Дата создания',
+        null=True)
+    time_update = models.DateTimeField(
+        auto_now=True,
+        blank=True,
+        verbose_name='Дата последнего изменения',
+        null=True)
     user = models.ForeignKey(
-        User, on_delete=models.SET_NULL, verbose_name="Создан пользователем", **NULLABLE,
+        User, on_delete=models.SET_NULL,
+        verbose_name="Создан пользователем",
+        **NULLABLE,
     )
-    published = models.BooleanField(default=False, verbose_name="Опубликован", )
+    published = models.BooleanField(
+        default=False,
+        verbose_name="Опубликован", )
 
     def __str__(self):
         return f'{self.name} {self.category}'
@@ -26,8 +49,12 @@ class Product(models.Model):
         verbose_name_plural = 'Продукты'
         ordering = ['name', 'category', 'price']
 
+
 class Category(models.Model):
-    name = models.CharField(max_length=100, db_index=True, verbose_name='Наименование категории')
+    name = models.CharField(
+        max_length=100,
+        db_index=True,
+        verbose_name='Наименование категории')
     description = models.TextField(max_length=10000, verbose_name='Описание')
 
     def __str__(self):
@@ -40,11 +67,15 @@ class Category(models.Model):
 
 
 class Version(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, **NULLABLE, related_name='products',
-                                 verbose_name='Продукт')
-    number_version = models.IntegerField (verbose_name='Номер версии')
+    product = models.ForeignKey(
+        Product, on_delete=models.SET_NULL,
+        **NULLABLE, related_name='products',
+        verbose_name='Продукт')
+    number_version = models.IntegerField(verbose_name='Номер версии')
     name = models.CharField(max_length=100, verbose_name='Название версии')
-    current_version = models.BooleanField(default=True, verbose_name='Текущая версия')
+    current_version = models.BooleanField(
+        default=True,
+        verbose_name='Текущая версия')
 
     def __str__(self):
         return self.name
