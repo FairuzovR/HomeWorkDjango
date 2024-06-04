@@ -20,6 +20,7 @@ class BlogCreateView(CreateView):
 
         return super().form_valid(form)
 
+
 class BlogListView(ListView):
     model = Blog
 
@@ -27,6 +28,7 @@ class BlogListView(ListView):
         queryset = super().get_queryset(*args, **kwargs)
         queryset = queryset.filter(is_published=True)
         return queryset
+
 
 class BlogDetailView(DetailView):
     model = Blog
@@ -36,6 +38,8 @@ class BlogDetailView(DetailView):
         self.object.views_count += 1
         self.object.save()
         return self.object
+
+
 class BlogUpdateView(UpdateView):
     model = Blog
     form_class = BlogForm
@@ -52,9 +56,11 @@ class BlogUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('blogs:view', args=[self.kwargs.get('pk')])
 
+
 class BlogDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('blogs:list')
+
 
 def toggle_published(request, pk):
     blog_item = get_object_or_404(Blog, pk=pk)

@@ -13,6 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='published',
-            field=models.BooleanField(default=False, verbose_name='Опубликован'),
+            field=models.BooleanField(
+                default=False,
+                verbose_name='Опубликован'),
         ),
     ]

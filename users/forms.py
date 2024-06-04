@@ -3,10 +3,12 @@ from users.models import User
 from catalog.forms import StyleForMexin
 from django import forms
 
+
 class UserRegisterForm(StyleForMexin, UserCreationForm):
     class Meta:
         model = User
         fields = ("email", "password1", "password2")
+
 
 class ProfileForm(StyleForMexin, UserChangeForm):
     class Meta:

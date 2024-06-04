@@ -8,8 +8,9 @@ from users.forms import UserRegisterForm, ProfileForm
 from django.urls import reverse_lazy
 from config.settings import EMAIL_HOST_USER
 from django.shortcuts import get_object_or_404, redirect, reverse, render
-from django.contrib.auth.views import LoginView, PasswordResetView
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
+
 
 class UserCreateView(CreateView):
     model = User
@@ -30,9 +31,10 @@ class UserCreateView(CreateView):
             subject="Подтверждение почты",
             message=f"Привет перейди по ссылке для подтверждения почты {url}",
             from_email=EMAIL_HOST_USER,
-            recipient_list = [user.email]
+            recipient_list=[user.email]
         )
         return super().form_valid(form)
+
 
 class LoginUser(LoginView):
     form_class = AuthenticationForm
@@ -40,6 +42,7 @@ class LoginUser(LoginView):
 
     def get_success_url(self):
         return reverse_lazy('catalog:home')
+
 
 def email_verification(request, token):
     user = get_object_or_404(User, token=token)
@@ -50,7 +53,9 @@ def email_verification(request, token):
 
 def reset_password(request):
     context = {
-        'success_message': 'Пароль успешно сброшен, Новый пароль был отправлен на Ваш адрес электронный почты'
+        'success_message': 'Пароль успешно сброшен, '
+                           'Новый пароль был отправлен '
+                           'на Ваш адрес электронный почты'
     }
 
     if request.method == 'POST':
@@ -64,14 +69,14 @@ def reset_password(request):
         user.save()
         send_mail(
             subject='Восстановление пароля',
-            message=f'Здравствуйте, вы запрашивали обновление пароля. Ваш новый пароль: {password}',
+            message=f'Здравствуйте, вы запрашивали обновление пароля. '
+                    f'Ваш новый пароль: {password}',
             from_email=EMAIL_HOST_USER,
             recipient_list=[user.email],
         )
         return render(request, 'users/reset_password.html', context)
     else:
         return render(request, 'users/reset_password.html')
-
 
 
 class ProfileView(UpdateView):
