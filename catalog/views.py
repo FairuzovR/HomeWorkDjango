@@ -7,6 +7,7 @@ from django.urls import reverse_lazy, reverse
 from pytils.translit import slugify
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 
 # Create your views here.
 
@@ -71,11 +72,9 @@ class ProductsUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_form_class(self):
         user = self.request.user
-        if user == self.object.user:
+        if user == self.object.owner:
             return ProductForm
-        if (user.has_perm('catalog.can_cancel_puplication') and
-                user.has_perm('catalog.can_change_desription')
-                and user.has_perm('catalog.can_change_category')):
+        if user.has_perm("catalog.can_edit_published") and user.has_perm("catalog.can_change_description") and user.has_perm("catalog.can_change_category"):
             return ProductModeratorForm
         raise PermissionDenied
 
@@ -100,6 +99,7 @@ class ProductView(DetailView):
     model = Product
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products_list')
+

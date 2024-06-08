@@ -32,7 +32,7 @@ class Product(models.Model):
         blank=True,
         verbose_name='Дата последнего изменения',
         null=True)
-    user = models.ForeignKey(
+    owner = models.ForeignKey(
         User, on_delete=models.SET_NULL,
         verbose_name="Создан пользователем",
         **NULLABLE,
@@ -48,6 +48,11 @@ class Product(models.Model):
         verbose_name = 'Продукты'
         verbose_name_plural = 'Продукты'
         ordering = ['name', 'category', 'price']
+        permissions = [
+            ("can_edit_published", "Активация публикации"),
+            ("can_change_description", "Изменить описание"),
+            ("can_change_category", "Изменить категорию")
+        ]
 
 
 class Category(models.Model):
