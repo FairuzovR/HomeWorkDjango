@@ -1,4 +1,4 @@
-from django import forms
+# from django import forms
 from django.forms import ModelForm
 from catalog.models import Product, Version
 from django.forms.fields import BooleanField
@@ -44,13 +44,14 @@ class ProductForm(StyleForMexin, ModelForm):
         return description
 
 
+
 class VersionForm(ModelForm):
     class Meta:
         model = Version
         fields = "__all__"
 
 
-class ProductModeratorForm(StyleForMexin, forms.ModelForm):
+class ProductModeratorForm(StyleForMexin, ModelForm):
     class Meta:
         model = Product
         fields = ("published", "description", "category")
