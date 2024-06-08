@@ -44,7 +44,6 @@ class ProductForm(StyleForMexin, ModelForm):
         return description
 
 
-
 class VersionForm(ModelForm):
     class Meta:
         model = Version
