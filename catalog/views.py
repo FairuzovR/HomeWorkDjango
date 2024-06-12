@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
 from django.views.generic import (
     CreateView, ListView, DetailView, UpdateView, DeleteView)
 from catalog.forms import ProductForm, VersionForm, ProductModeratorForm
@@ -8,6 +8,7 @@ from pytils.translit import slugify
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
+from catalog.services import get_category_from_cache
 
 # Create your views here.
 
@@ -103,3 +104,8 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products_list')
 
+
+class CategoryListView(ListView):
+    model = Category
+    def get_queryset(self):
+        return get_category_from_cache()
